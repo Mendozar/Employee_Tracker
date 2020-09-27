@@ -1,3 +1,5 @@
+
+// Dependencies
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const { printTable } = require('console-table-printer');
@@ -74,7 +76,6 @@ getRoles = () => {
   connection.query("SELECT id, title FROM role", (err, res) => {
     if (err) throw err;
     roles = res;
-    // console.table(roles);
   })
 };
 
@@ -82,7 +83,6 @@ getDepartments = () => {
   connection.query("SELECT id, name FROM department", (err, res) => {
     if (err) throw err;
     departments = res;
-    // console.log(departments);
   })
 };
 
@@ -90,7 +90,6 @@ getManagers = () => {
   connection.query("SELECT id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS managers FROM employee", (err, res) => {
     if (err) throw err;
     managers = res;
-    // console.table(managers);
   })
 };
 
@@ -98,7 +97,6 @@ getEmployees = () => {
   connection.query("SELECT id, CONCAT_WS(' ', first_name, last_name) AS Employee_Name FROM employee", (err, res) => {
     if (err) throw err;
     employees = res;
-    // console.table(employees);
   })
 };
 
