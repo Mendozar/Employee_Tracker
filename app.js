@@ -1,4 +1,3 @@
-
 // Dependencies
 const mysql = require('mysql');
 const inquirer = require('inquirer');
@@ -39,6 +38,7 @@ var connection = mysql.createConnection({
 
   start = () => {
 
+    // First Prompt
     inquirer
       .prompt({
         name: "choices",
@@ -46,6 +46,7 @@ var connection = mysql.createConnection({
         message: "What would you like to do?",
         choices: ["ADD", "VIEW", "UPDATE", "DELETE", "EXIT"]
       })
+      // Run the respective function based on the chosen response.
       .then(function(answer) {
         if (answer.choices === "ADD") {
           addSomething();
@@ -71,6 +72,8 @@ var connection = mysql.createConnection({
         }
       });
   }
+
+// Get Roles, Departments, Managers or Employees with SQL injection
 
 getRoles = () => {
   connection.query("SELECT id, title FROM role", (err, res) => {
@@ -99,6 +102,9 @@ getEmployees = () => {
     employees = res;
   })
 };
+
+
+// Add a Department, Role or Employee to the Database
 
 addSomething = () => {
   inquirer.prompt([
@@ -174,11 +180,14 @@ addRole = () => {
       choices: departmentOptions
     },
   ]).then(function(answer) {
+
+    // For loop cycles through the departments until it finds a match
     for (i = 0; i < departmentOptions.length; i++) {
       if (departmentOptions[i].name === answer.department_id) {
         department_id = departmentOptions[i].id
       }
     }
+    // Use SQL injection to Insert new record with the info.
     connection.query(`INSERT INTO role (title, salary, department_id) VALUES ('${answer.title}', '${answer.salary}', ${department_id})`, (err, res) => {
       if (err) throw err;
 
@@ -193,14 +202,20 @@ addEmployee = () => {
   getRoles();
   getManagers();
   let roleOptions = [];
+
   for (i = 0; i < roles.length; i++) {
     roleOptions.push(Object(roles[i]));
   };
+  
   let managerOptions = [];
+  
   for (i = 0; i < managers.length; i++) {
     managerOptions.push(Object(managers[i]));
   }
+  
   inquirer.prompt([
+
+    // Assigns the employee's name
     {
       name: "first_name",
       type: "input",
@@ -215,20 +230,33 @@ addEmployee = () => {
       name: "role_id",
       type: "list",
       message: "What is the role for this employee?",
+  
+      // Display all of the roles
       choices: function() {
+
         var choiceArray = [];
+
         for (var i = 0; i < roleOptions.length; i++) {
           choiceArray.push(roleOptions[i].title)
         }
+
         return choiceArray;
-      }
+
+    }
     },
     {
       name: "manager_id",
+
       type: "list",
+
       message: "Who is the employee's manager?",
+
+      // Display all of the managers
+
       choices: function() {
+
         var choiceArray = [];
+
         for (var i = 0; i < managerOptions.length; i++) {
           choiceArray.push(managerOptions[i].managers)
         }
@@ -236,6 +264,7 @@ addEmployee = () => {
       }
     }
   ]).then(function(answer) {
+
     for (i = 0; i < roleOptions.length; i++) {
       if (roleOptions[i].title === answer.role_id) {
         role_id = roleOptions[i].id
@@ -248,6 +277,8 @@ addEmployee = () => {
       }
     }
 
+    // Add the employee to the database
+
     connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answer.first_name}', '${answer.last_name}', ${role_id}, ${manager_id})`, (err, res) => {
       if (err) throw err;
 
@@ -257,6 +288,8 @@ addEmployee = () => {
     }) 
   })
 };
+
+// View Departments, Roles or Employees
 
 viewSomething = () => {
   inquirer.prompt([
