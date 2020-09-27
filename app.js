@@ -23,7 +23,7 @@ var connection = mysql.createConnection({
     database: "employees_db"
   });
 
-  figlet('FSC Employee Tracker', (err, result) => {
+  figlet('Console Log Employee Tracker', (err, result) => {
     console.log(err || result);
   });
 
@@ -373,7 +373,7 @@ updateSomething = () => {
       updateEmployeeManager();
     }
     else if(answer.update === "EXIT") {
-      figlet('Thanks for using FSC Employee Tracker', (err, result) => {
+      figlet('Thanks for using Console Log Employee Tracker', (err, result) => {
         console.log(err || result);
       });
 
@@ -443,6 +443,7 @@ start();
   })
 };
   
+// Update who the Employee's manager is.
 
 updateEmployeeManager = () => {
   let employeeOptions = [];
@@ -456,10 +457,13 @@ updateEmployeeManager = () => {
       type: "list",
       message: "Which employee's manager do you want to update?",
       choices: function () {
+
         var choiceArray = [];
+
         for (var i = 0; i < employeeOptions.length; i++) {
           choiceArray.push(employeeOptions[i].Employee_Name);
         }
+
         return choiceArray;
       }
     }
@@ -467,13 +471,16 @@ updateEmployeeManager = () => {
     getEmployees();
     getManagers();
     let managerOptions = [];
+
     for (i = 0; i < managers.length; i++) {
       managerOptions.push(Object(managers[i]));
     };
+
     for (i = 0; i < employeeOptions.length; i++) {
       if (employeeOptions[i].Employee_Name === answer.updateManager) {
         employeeSelected = employeeOptions[i].id
       }
+
     }
     inquirer.prompt([
       {
@@ -491,10 +498,13 @@ updateEmployeeManager = () => {
     ]).then(answer => {
 for (i = 0; i < managerOptions.length; i++) {
   if (answer.newManager === managerOptions[i].managers) {
+
     newChoice = managerOptions[i].id
+    // Update the manager
     connection.query(`UPDATE employee SET manager_id = ${newChoice} WHERE id = ${employeeSelected}`), (err, res) => {
       if (err) throw err;
     };
+    
     console.log("Manager Updated Succesfully");
   }
 }
