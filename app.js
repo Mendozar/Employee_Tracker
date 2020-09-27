@@ -505,7 +505,10 @@ start();
   })
 };
 
+// Choose a data type to delete.
+
 deleteSomething = () => {
+
   inquirer.prompt([
     {
       name: "delete",
@@ -535,8 +538,12 @@ deleteSomething = () => {
   })
 };
 
+// Delete a department
+
 deleteDepartment = () => {
+
   let departmentOptions = [];
+  
   for (var i = 0; i < departments.length; i++) {
     departmentOptions.push(Object(departments[i]));
   }
@@ -547,19 +554,31 @@ deleteDepartment = () => {
       type: "list",
       message: "Select a department to delete",
       choices: function() {
+        
         var choiceArray = [];
+        
+        // Collect all of the departments
         for (var i = 0; i < departmentOptions.length; i++) {
-          choiceArray.push(departmentOptions[i])
+        
+            choiceArray.push(departmentOptions[i])
+        
         }
         return choiceArray;
       }
     }
   ]).then(answer => {
+
     for (i = 0; i < departmentOptions.length; i++) {
-      if (answer.deleteDepartment === departmentOptions[i].name) {
-        newChoice = departmentOptions[i].id
-        connection.query(`DELETE FROM department Where id = ${newChoice}`), (err, res) => {
-          if (err) throw err;
+      
+        if (answer.deleteDepartment === departmentOptions[i].name) {
+      
+            newChoice = departmentOptions[i].id
+            
+            // Delete the selected department
+
+            connection.query(`DELETE FROM department Where id = ${newChoice}`), (err, res) => {
+      
+                if (err) throw err;
         };
         console.log("Department: " + answer.deleteDepartment + " Deleted Succesfully");
       }
@@ -568,6 +587,8 @@ deleteDepartment = () => {
     start();
   })
 };
+
+// Delete a role in the company
 
 deleteRole = () => {
   let roleOptions = [];
@@ -581,19 +602,32 @@ deleteRole = () => {
       type: "list",
       message: "Select a role to delete",
       choices: function() {
+
         var choiceArray = [];
+        
+        // Collect all of the roles at the company
+
         for (var i = 0; i < roleOptions.length; i++) {
-          choiceArray.push(roleOptions[i].title)
+        
+            choiceArray.push(roleOptions[i].title)
         }
+        
         return choiceArray;
       }
     }
   ]).then(answer => {
+
     for (i = 0; i < roleOptions.length; i++) {
-      if (answer.deleteRole === roleOptions[i].title) {
-        newChoice = roleOptions[i].id
-        connection.query(`DELETE FROM role Where id = ${newChoice}`), (err, res) => {
-          if (err) throw err;
+      
+        if (answer.deleteRole === roleOptions[i].title) {
+      
+            newChoice = roleOptions[i].id
+            
+            // Delete the role from the database via SQL injection
+
+            connection.query(`DELETE FROM role Where id = ${newChoice}`), (err, res) => {
+      
+                if (err) throw err;
         };
         console.log("Role: " + answer.deleteRole + " Deleted Succesfully");
       }
